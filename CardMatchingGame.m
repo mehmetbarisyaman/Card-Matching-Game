@@ -12,6 +12,7 @@
 @property(nonatomic, readwrite) NSInteger score;
 @property(nonatomic, strong)NSMutableArray *cards; //of Card
 @property(nonatomic, strong)NSMutableArray *ucluCards;
+@property(nonatomic)NSInteger currentIndex;
 @end
 
 @implementation CardMatchingGame
@@ -20,6 +21,8 @@
     if(!_cards)_cards = [[NSMutableArray alloc]init];
     return _cards;
 }
+
+
 
 -(NSMutableArray *)ucluCards{
     if(!_ucluCards){
@@ -54,6 +57,55 @@ static const int COST_TO_CHOOSE = 1;
 }
 
 
+-(NSUInteger)chooseCardForSecondViewController:(NSUInteger)index{
+    
+    Card *card = [self cardAtIndex: index];
+    if(card.chosen == YES){
+        card.chosen =NO;
+        self.currentIndex--;
+        [self.ucluCards removeObject:card];
+    }
+    else{
+        card.chosen = YES;
+        self.currentIndex++;
+        [self.ucluCards addObject:card];
+        if(self.currentIndex ==3){
+            NSInteger x =[self decideScore:self.ucluCards];
+            _currentIndex=0;
+            return x;
+        }
+    }
+    return 0;
+}
+
+-(NSUInteger)decideScore:(NSMutableArray *)testArray{
+    Card *testCard1 = [testArray objectAtIndex:0];
+    Card *testCard2 = [testArray objectAtIndex:1];
+    Card *testCard3 = [testArray objectAtIndex:2];
+    if(testCard1.rank == testCard2.rank && testCard2.rank == testCard3.rank && testCard1.rank == testCard3.rank){
+        testCard1.matched = YES;
+        testCard2.matched = YES;
+        testCard3.matched = YES;
+        [testArray removeAllObjects];
+        self.result = [ NSMutableString stringWithFormat:@"Rank match happens!"];
+        return 10;
+    }
+    
+    else if(testCard1.suit == testCard2.suit && testCard2.suit == testCard3.suit && testCard1.suit == testCard3.suit){
+        testCard1.matched = YES;
+        testCard2.matched = YES;
+        testCard3.matched = YES;
+        [testArray removeAllObjects];
+        self.result = [ NSMutableString stringWithFormat:@"Suit match happens!"];
+        return 5;
+    }
+    testCard1.chosen=NO;
+    testCard2.chosen=NO;
+    testCard3.chosen=NO;
+    [testArray removeAllObjects];
+    self.result = [ NSMutableString stringWithFormat:@"Mismatch happens!"];
+    return -3;
+}
 
 
 -(NSString *)chooseCardAtIndex:(NSUInteger)index{
@@ -95,9 +147,10 @@ static const int COST_TO_CHOOSE = 1;
             return [NSString stringWithFormat:@" "];
         }
     }
-    return [NSString stringWithFormat:@" You cant choose a matched card"];
+    return [NSString stringWithFormat:@"You cant choose a matched card"];
 }
 
+/*
 -(NSString *)threeTypeCheck:(NSMutableArray *)response{
     Card *haci = [response objectAtIndex:2];
     NSString *sonuc = [[NSString alloc]init];
@@ -167,5 +220,6 @@ static const int COST_TO_CHOOSE = 1;
     }
     return [NSString stringWithFormat:@" "];
 }
-
+*/
+ 
 @end

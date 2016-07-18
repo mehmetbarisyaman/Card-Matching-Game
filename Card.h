@@ -12,9 +12,17 @@
 
 @property(strong, nonatomic) NSString *contents;
 
+@property(strong,nonatomic)NSString *suit;
+@property(nonatomic) NSUInteger rank;
+
++(NSArray *)validSuits;
++(NSUInteger) maxRank;
+
+
 @property(nonatomic, getter = isChosen) BOOL chosen;
 
 @property(nonatomic, getter = isMatched) BOOL matched;
+
 
 -(int) match:(NSArray *)otherCards;
 

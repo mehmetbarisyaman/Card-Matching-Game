@@ -18,6 +18,8 @@
 //designated initializer
 -(instancetype)initWithCardCount:(NSUInteger)count usingDeck:(Deck *)deck;
 
+-(NSUInteger)chooseCardForSecondViewController:(NSUInteger)index;
+
 -(NSString *)chooseCardAtIndex:(NSUInteger)index;
 
 -(Card *)cardAtIndex:(NSUInteger)index;
@@ -26,8 +28,10 @@
 
 @property(nonatomic, readonly)NSInteger score;
 
--(NSString *)chooseMultipleCards:(NSUInteger)index;
+@property(strong, nonatomic)NSMutableString *result;
 
--(NSString *)threeTypeCheck:(NSMutableArray *)response;
+//-(NSString *)chooseMultipleCards:(NSUInteger)index;
+
+//-(NSString *)threeTypeCheck:(NSMutableArray *)response;
 
 @end

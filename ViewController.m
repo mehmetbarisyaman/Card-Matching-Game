@@ -7,20 +7,25 @@
 //
 
 #import "ViewController.h"
-#import "PlayingCardDeck.h"
-#import "CardMatchingGame.h"
+#import "HistoryViewController.h"
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UISegmentedControl *switchCase;
-@property(strong, nonatomic) CardMatchingGame *game;
 @property (weak, nonatomic) IBOutlet UIButton *resetButton;
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
 @property(nonatomic) NSUInteger matchType;
 @property (weak, nonatomic) IBOutlet UILabel *GameText;
+@property(strong, nonatomic) CardMatchingGame *game;
+
 @end
 
 @implementation ViewController
+
+-(NSMutableArray *)historicArray{
+    if(!_historicArray) _historicArray = [[NSMutableArray alloc]init];
+    return _historicArray;
+}
 
 
 
@@ -28,17 +33,12 @@
     if(!_game){
         _game = [[CardMatchingGame alloc]initWithCardCount:[self.cardButtons count] usingDeck:[self createDeck]];
         self.GameText.text = [NSString stringWithFormat:@"Game Starts!"];
-        [self.game setSayac:_matchType];
+        [self.historicArray addObject:self.GameText.text];
+       // [self.game setSayac:_matchType];
     }
     return _game;
 }
 
-- (IBAction)touchCaseButton:(UISegmentedControl *)sender {
-    if(_matchType == 2) _matchType = 3;
-    else if(_matchType==3)_matchType = 2;
-    else _matchType = 3;
-    [self.game setSayac:_matchType];
-}
 
 
 -(Deck *)createDeck{
@@ -48,10 +48,12 @@
 
 - (IBAction)touchCardButton:(UIButton *)sender {
     NSInteger chosenButtonIndex = [self.cardButtons indexOfObject:sender];
-    if(_matchType==3)
+/*    if(_matchType==3)
         self.GameText.text = [NSString stringWithFormat:@"%@",[self.game chooseMultipleCards:chosenButtonIndex]];
     else
+ */
         self.GameText.text = [NSString stringWithFormat:@"%@",[self.game chooseCardAtIndex:chosenButtonIndex]];
+    [self.historicArray addObject:self.GameText.text];
     [self updateUI];
 }
 
@@ -67,13 +69,12 @@
 - (IBAction)touchResetButton:(UIButton *)sender {
     _game = [[CardMatchingGame alloc] initWithCardCount:[self.cardButtons count] usingDeck:[self createDeck]];
     self.GameText.text = [NSString stringWithFormat:@"New Game Starts!"];
+    [self.historicArray addObject:self.GameText.text];
     [self.game setSayac:_matchType];
     [self updateUI];
 }
 
 -(void)updateUI{
-    
-    
     
     for(UIButton *cardButton in self.cardButtons){
         NSUInteger cardButtonIndex = [self.cardButtons indexOfObject:cardButton];
@@ -82,6 +83,14 @@
         [cardButton setBackgroundImage:[self backgroundImageForCard:card] forState:UIControlStateNormal];
         cardButton.enabled = !card.isMatched;
         self.scoreLabel.text = [NSString stringWithFormat:@"Score: %ld", (long)self.game.score];
+    }
+    
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    if([[segue identifier]isEqualToString:@"cardMatchingGameSegue"]){
+        HistoryViewController *hVC = [segue destinationViewController];
+        hVC.dataPassed = self.historicArray;
     }
 }
 

@@ -38,10 +38,11 @@
     return [[self rankStrings] count]-1;
 }
 
--(void) setRank:(NSUInteger)rank{
+/*-(void) setRank:(NSUInteger)rank{
     if(rank<= [PlayingCard maxRank])
         _rank = rank;
 }
+ */
 
 -(int)match:(NSArray *)otherCards{
     int score=0;
