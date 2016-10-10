@@ -9,6 +9,8 @@
 
 #import "ViewController.h"
 #import "SecondViewController.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <UIKit/UIKit.h>
 
 @interface HistoryViewController : UIViewController
